@@ -269,14 +269,27 @@ namespace Midi
             }
         }
 
-#region SysEx
+		/// <summary>
+		/// Sends a raw 3 byte message, encoded as an integer (Most significant byte not used)
+		/// </summary>
+		/// <param name="data">3 bytes encoded as an int, use 3 least significant bytes</param>
+		public void SendRaw(int data)
+		{
+			lock (this)
+			{
+				CheckOpen();
+				CheckReturnCode(Win32API.midiOutShortMsg(handle, (uint)data));
+			}
+		}
 
-        /// <summary>
-        /// Sends a System Exclusive (sysex) message to this MIDI output device.
-        /// </summary>
-        /// <param name="data">The message to send (as byte array)</param>
-        /// <exception cref="DeviceException">The message cannot be sent.</exception>
-        public void SendSysEx(Byte[] data)
+		#region SysEx
+
+		/// <summary>
+		/// Sends a System Exclusive (sysex) message to this MIDI output device.
+		/// </summary>
+		/// <param name="data">The message to send (as byte array)</param>
+		/// <exception cref="DeviceException">The message cannot be sent.</exception>
+		public void SendSysEx(Byte[] data)
         {
             lock (this)
             {
